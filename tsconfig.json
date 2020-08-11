@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "baseUrl": "./",
+    "baseUrl": ".",
     "target": "esnext",
     "module": "esnext",
     "moduleResolution": "node",
@@ -20,9 +20,9 @@
     "resolveJsonModule": true,
     "paths": {
       "~/*": ["./*"],
-      "@/*": ["./client/*"],
+      "@/*": ["./*"],
       "~~/*": ["./*"],
-      "@@/*": ["./client/*"]
+      "@@/*": ["./*"]
     },
     "types": [
       "@nuxt/types",
@@ -31,5 +31,5 @@
       "webpack-env"
     ]
   },
-  "exclude": ["node_modules", ".nuxt", "dist", "./cmd"]
+  "exclude": ["node_modules", ".nuxt", "dist"]
 }

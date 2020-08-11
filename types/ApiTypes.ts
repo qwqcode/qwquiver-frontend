@@ -1,6 +1,27 @@
 import F from './Field'
-import { EXAM_CONF } from './Exam'
-import { EXAM_MAP } from './Database'
+
+/** 数据表配置 */
+export interface EXAM_CONF {
+  /** 名称 */
+  Name: string
+
+  /** 标签 */
+  Label?: string
+
+  /** 每科最大分值 */
+  FullScore?: { [subject in F]?: number }
+
+  /** 考试日期 */
+  Date?: string
+
+  /** 所属分类 */
+  Grp?: string
+
+  /** 备注 */
+  Note?: string
+}
+
+export type EXAM_MAP = EXAM_CONF[]
 
 export interface CommonParms {
   /** 成绩数据表名 */

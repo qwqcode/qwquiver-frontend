@@ -2,7 +2,7 @@
   <div class="explorer card" :class="{ 'card-fullscreen': isFullScreen }">
     <div v-if="data !== null" class="card-header">
       <h2 ref="tTitle" class="card-title">
-        <span class="exam-label" @click="$refs.examSelect.show($event.target)">{{ data.examConf.Label }}</span> - {{ data.dataDesc }}
+        <span class="exam-label" @click="$refs.examSelect.show($event.target)">{{ data.examConf.Label || data.examName }}</span> - {{ data.dataDesc }}
         <span
           style="font-size: 13px;vertical-align: bottom;"
         >[页码 {{ data.page }}/{{ data.lastPage }}]</span>
@@ -207,12 +207,12 @@ import { Component, Vue, Prop, Watch } from 'nuxt-property-decorator'
 import { Persist } from 'vue-local-storage-decorator'
 import $ from 'jquery'
 import _ from 'lodash'
+import F, { ScoreData } from '../types/Field'
+import * as FG from '../types/Field/Grp'
+import * as ApiT from '../types/ApiTypes'
 import LoadingLayer from './LoadingLayer.vue'
 import SelectFloater from './SelectFloater.vue'
 import ExplorerDialog from './ExplorerDialog.vue'
-import F, { ScoreData } from '~~/server/Field'
-import * as FG from '~~/server/Field/Grp'
-import * as ApiT from '~~/server/ApiTypes'
 
 type FIELD_RANK_TYPE = 'all'|'class'|'school'
 

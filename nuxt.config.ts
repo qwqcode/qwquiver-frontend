@@ -6,7 +6,7 @@ const config: Configuration = {
   /**
    * Source directory
    */
-  srcDir: 'client/',
+  srcDir: '.',
   /*
    ** Headers of the page
    */
@@ -71,7 +71,9 @@ const config: Configuration = {
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options
    */
-  axios: {},
+  axios: {
+    baseURL: './'
+  },
   /*
    ** Build configuration
    */
@@ -81,11 +83,11 @@ const config: Configuration = {
      */
     extend(config, ctx) {}
   },
-  serverMiddleware: [
-    // Server middleware
-    path.join(__dirname, 'server/index.ts')
-  ],
-  watch: [path.join(__dirname, 'server/*.ts')]
+  privateRuntimeConfig: {
+    axios: {
+      baseURL: 'http://localhost:8087/'
+    }
+  }
 }
 
 export default config

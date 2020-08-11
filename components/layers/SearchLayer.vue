@@ -69,8 +69,8 @@ import _ from 'lodash'
 import $ from 'jquery'
 import LoadingLayer from '../LoadingLayer.vue'
 import SelectFloater from '../SelectFloater.vue'
-import F, { ScoreData } from '~~/server/Field'
-import * as ApiT from '~~/server/ApiTypes'
+import F, { ScoreData } from '../../types/Field'
+import * as ApiT from '../../types/ApiTypes'
 
 type SearchType = 'Name' | 'SchoolClass'
 const OutClickEvtName = 'click.SearchLayer'
@@ -104,7 +104,7 @@ export default class SearchLayer extends Vue {
 
   get searchExamLabel () {
     if (this.searchExamName === null) return null
-    return this.$app.ExamNameToLabelObj ? this.$app.ExamNameToLabelObj[this.searchExamName] || null : null
+    return this.$app.ExamNameToLabelObj ? this.$app.ExamNameToLabelObj[this.searchExamName] || this.searchExamName || null : null
   }
 
   switchExam (examName: string) {
@@ -165,7 +165,7 @@ export default class SearchLayer extends Vue {
     if (sc === null || !sc.data || !sc.openedSchool || !sc.data.school[sc.openedSchool])
       return []
     return _.orderBy(sc.data.school[sc.openedSchool], (o) => {
-      const num = o.match(/[0-9]+/)
+      const num = String(o).match(/[0-9]+/)
       return num ? Number(num[0] || 0) : 0
     }, ['asc'])
   }
@@ -178,7 +178,7 @@ export default class SearchLayer extends Vue {
     this.scLoading.show()
     let respData
     try {
-      respData = await this.$axios.$get('./api/allSchoolClass', {
+      respData = await this.$axios.$get('./api/school/all', {
         params: { exam: this.searchExamName }
       })
     } catch (err) {

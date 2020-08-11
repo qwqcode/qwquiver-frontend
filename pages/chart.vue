@@ -12,7 +12,7 @@ import DataSet from '@antv/data-set'
 import _ from 'lodash'
 import $ from 'jquery'
 import LoadingLayer from '../components/LoadingLayer.vue'
-import * as ApiT from '~~/server/ApiTypes'
+import * as ApiT from '../types/ApiTypes'
 
 @Component({
   components: { LoadingLayer }
