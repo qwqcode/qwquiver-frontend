@@ -72,7 +72,7 @@ const config: Configuration = {
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
-    baseURL: './'
+    baseURL: 'http://localhost:8087/'
   },
   /*
    ** Build configuration
@@ -82,11 +82,6 @@ const config: Configuration = {
      ** You can extend webpack config here
      */
     extend(config, ctx) {}
-  },
-  privateRuntimeConfig: {
-    axios: {
-      baseURL: 'http://localhost:8087/'
-    }
   }
 }
 

@@ -1,6 +1,6 @@
 <template>
   <transition name="fade">
-    <div v-if="isShow" class="search-panel" style="animation-duration: 0.14s">
+    <div v-if="isShow" class="search-panel" style="animation-duration: 0.1s">
       <div class="inner">
         <div class="tab-bar">
           <span
@@ -37,6 +37,7 @@
             <LoadingLayer ref="scLoading" />
             <div v-if="!!sc && !!sc.data" class="school-class-list mini-scrollbar">
               <div class="list school-list">
+                <span class="item" @click="scSubmit()">全部学校</span>
                 <span
                   v-for="school in Object.keys(sc.data.school)"
                   :key="school"
@@ -153,8 +154,9 @@ export default class SearchLayer extends Vue {
     })
   }
 
-  scSubmit (schoolName: string, className?: string) {
-    this.searchData.SCHOOL = schoolName
+  scSubmit (schoolName?: string, className?: string) {
+    if (schoolName)
+      this.searchData.SCHOOL = schoolName
     if (className)
       this.searchData.CLASS = className
     this.submit()

@@ -20,16 +20,21 @@ import $ from 'jquery'
 export default class LoadingLayer extends Vue {
   isShow = false
   isIconShow = false
+  showTimeout: number = -1
 
   show () {
-    this.isShow = true
-    window.setTimeout(() => {
+    this.showTimeout = window.setTimeout(() => {
+      this.isShow = true
       if (!this.isShow) return
       this.isIconShow = true
+      this.showTimeout = -1
     }, 700)
   }
 
   hide () {
+    if (this.showTimeout !== -1) {
+      window.clearTimeout(this.showTimeout)
+    }
     this.isIconShow = false
     this.isShow = false
   }

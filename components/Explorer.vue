@@ -258,14 +258,7 @@ export default class Explorer extends Vue {
     const rawFieldList = this.data.fieldList // 源字段
 
     // 允许出现的字段
-    let F_MAIN = FG.F_MAIN
-    if (this.isClassSearchMode) {
-      F_MAIN = FG.F_MAIN_CLASS
-    } else if (this.isSchoolSearchMode) {
-      F_MAIN = FG.F_MAIN_SCHOOL
-    }
-
-    const allowFields = [...F_MAIN, ...FG.F_SUBJ, ...FG.F_EXT_SUM]
+    const allowFields = [...FG.F_MAIN, ...FG.F_SUBJ, ...FG.F_EXT_SUM]
 
     // 构建有序的字段 & 排除字段
     const fieldList: F[] = []
@@ -356,16 +349,6 @@ export default class Explorer extends Vue {
     }
 
     if (resp.success && !!resp.data) {
-      this.data = resp.data
-      // 初始化配置装载
-      if (!!this.data && !!this.data.initConf) {
-        if (this.params) {
-          delete this.params.init // 删除初始化请求参数
-          this.params.exam = this.data.examConf.Name
-        }
-        this.$app.Conf = this.data.initConf
-      }
-
       // 自动设置字段 显示/隐藏
       const whereObj = this.paramsWhereObj
       if (this.isClassSearchMode) {
@@ -387,6 +370,18 @@ export default class Explorer extends Vue {
         })
         this.fieldRankType = 'all'
       }
+
+      this.$nextTick(() => {
+          this.data = resp.data
+          // 初始化配置装载
+          if (!!this.data && !!this.data.initConf) {
+          if (this.params) {
+            delete this.params.init // 删除初始化请求参数
+            this.params.exam = this.data.examConf.Name
+          }
+          this.$app.Conf = this.data.initConf
+        }
+      })
     } else {
       this.$notify.error(resp.msg)
     }
@@ -857,7 +852,7 @@ table {
 
 .table th,
 label {
-  font-weight: 500;
+  font-weight: normal;
 }
 
 .wly-table-body {

@@ -2,8 +2,6 @@ import F from '.'
 
 /** 主要字段 */
 export const F_MAIN = [F.RANK, F.NAME, F.CODE, F.SCHOOL, F.SCHOOL_RANK, F.CLASS, F.CLASS_RANK, F.TOTAL]
-export const F_MAIN_SCHOOL = [F.SCHOOL_RANK, F.NAME, F.CODE, F.RANK, F.SCHOOL, F.CLASS, F.CLASS_RANK, F.TOTAL]
-export const F_MAIN_CLASS = [F.CLASS_RANK, F.NAME, F.CODE, F.RANK, F.SCHOOL, F.SCHOOL_RANK, F.CLASS, F.TOTAL]
 
 /** 主科 */
 export const F_ZK_SUBJ = [F.YW, F.SX, F.YY]
