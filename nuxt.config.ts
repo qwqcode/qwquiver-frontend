@@ -72,7 +72,7 @@ const config: Configuration = {
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
-    baseURL: 'http://localhost:8087/'
+    baseURL: './'
   },
   /*
    ** Build configuration

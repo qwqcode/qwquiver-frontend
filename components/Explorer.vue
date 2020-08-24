@@ -371,16 +371,18 @@ export default class Explorer extends Vue {
         this.fieldRankType = 'all'
       }
 
-      this.$nextTick(() => {
-          this.data = resp.data
-          // 初始化配置装载
-          if (!!this.data && !!this.data.initConf) {
-          if (this.params) {
-            delete this.params.init // 删除初始化请求参数
-            this.params.exam = this.data.examConf.Name
-          }
-          this.$app.Conf = this.data.initConf
+      this.data = resp.data
+      // 初始化配置装载
+      if (!!this.data && !!this.data.initConf) {
+        if (this.params) {
+          delete this.params.init // 删除初始化请求参数
+          this.params.exam = this.data.examConf.Name
         }
+        this.$app.Conf = this.data.initConf
+      }
+
+      this.$nextTick(() => {
+        (this.$refs.tBody as HTMLElement).scrollTo(0, 0)
       })
     } else {
       this.$notify.error(resp.msg)
