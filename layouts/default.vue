@@ -45,7 +45,7 @@ export default class Default extends Vue {
       init: true
     }
     if (this.$route.query) params = { ...params, ...this.$route.query }
-    this.$explorer.onRouteQueryChanged(params as ApiT.QueryParams)
+    this.$explorer.request(params as ApiT.QueryParams)
   }
 
   get ExamMap () {

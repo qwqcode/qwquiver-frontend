@@ -1,6 +1,8 @@
 import path from 'path'
 import { Configuration } from '@nuxt/types'
 
+const IsDEV = process.env.NODE_ENV !== 'production'
+
 const config: Configuration = {
   mode: 'spa',
   /**
@@ -72,7 +74,7 @@ const config: Configuration = {
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
-    baseURL: './'
+    baseURL: IsDEV ? 'http://localhost:8087/' : './'
   },
   /*
    ** Build configuration

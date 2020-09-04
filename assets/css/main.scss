@@ -350,3 +350,7 @@ a {
     padding: 20px 15px 0 15px;
   }
 }
+
+.card-footer,.card-header+.card-block {
+  padding-top: 0
+}

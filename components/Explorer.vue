@@ -221,6 +221,7 @@ type FIELD_RANK_TYPE = 'all'|'class'|'school'
   components: { LoadingLayer, ExplorerDialog, SelectFloater }
 })
 export default class Explorer extends Vue {
+  isInit = true
   data: ApiT.QueryData | null = null
   params: ApiT.QueryParams | null = null
   isFullScreen = false
@@ -292,6 +293,9 @@ export default class Explorer extends Vue {
   toggleFieldView (field: F) {
     const isShow = !this.HideFieldList.includes(field)
     this.setFieldView(field, !isShow)
+    this.$nextTick(() => {
+      this.adjustDisplay()
+    })
   }
 
   setFieldView (field: F|F[]|{[f in F]?: boolean}, show?: boolean) {
@@ -308,15 +312,11 @@ export default class Explorer extends Vue {
     } else if (_.isObject(field)) {
       _.forEach(field, (show, f) => { setOneFieldView(f as F, show) })
     } else if(show !== undefined) setOneFieldView(field, show)
-    this.$nextTick(() => {
-      this.adjustDisplay()
-    })
   }
 
   @Watch('data')
   onDataChanged () {
     this.$nextTick(() => {
-      this.adjustDisplay()
       $(this.$refs.tBody).bind('scroll.table-scroll-sync', (e) => {
         $(this.$refs.tHeader).scrollLeft(($(e.target) as any).scrollLeft())
         $(this.$refs.tHeader).scrollTop(($(e.target) as any).scrollTop())
@@ -327,14 +327,24 @@ export default class Explorer extends Vue {
     // if (this.data === null) return
   }
 
-  @Watch('$route.query')
-  public async onRouteQueryChanged (query: object) {
+  @Watch('$route')
+  public async onRouteQueryChanged () {
+    const query = this.$route.query
+    if (this.$route.name !== 'index') return
     if (query === this.params) return
 
+    await this.request(query)
+  }
+
+  public async request (params: object) {
     this.loading.show()
-    this.params = query
+    this.params = params
     if (!this.params.exam) {
       this.params.init = true
+    }
+    if (this.isInit) {
+      this.params.init = true
+      this.isInit = false
     }
 
     let resp:any
@@ -382,6 +392,7 @@ export default class Explorer extends Vue {
       }
 
       this.$nextTick(() => {
+        this.adjustDisplay();
         (this.$refs.tBody as HTMLElement).scrollTo(0, 0)
       })
     } else {
@@ -491,6 +502,7 @@ export default class Explorer extends Vue {
   }
 
   adjustDisplay () {
+    console.log(+new Date())
     const wrapEl = $(this.$refs.tWrap)
     const containerEl = $(this.$refs.tContainer)
     const headerEl = $(this.$refs.tHeader)
