@@ -1,6 +1,6 @@
 <template>
   <transition name="fade">
-    <div v-if="isShow" ref="loading" class="loading-layer" style="animation-duration: 0.3s">
+    <div v-if="isShow" ref="loading" class="loading-layer" :style="{'animation-duration': delay > 0 ? '0.3s' : '0s'}">
       <transition name="fade">
         <div v-show="isIconShow" ref="icon" class="loading-icon">
           <svg viewBox="25 25 50 50">
@@ -13,27 +13,31 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'nuxt-property-decorator'
+import { Component, Vue, Prop } from 'nuxt-property-decorator'
 import $ from 'jquery'
 
 @Component({})
 export default class LoadingLayer extends Vue {
   isShow = false
   isIconShow = false
-  showTimeout: number = -1
+
+  @Prop({ default: 700 })
+  delay !: number
+
+  showTimeouter: number = -1
 
   show () {
-    this.showTimeout = window.setTimeout(() => {
+    this.showTimeouter = window.setTimeout(() => {
       this.isShow = true
       if (!this.isShow) return
       this.isIconShow = true
-      this.showTimeout = -1
-    }, 700)
+      this.showTimeouter = -1
+    }, this.delay)
   }
 
   hide () {
-    if (this.showTimeout !== -1) {
-      window.clearTimeout(this.showTimeout)
+    if (this.showTimeouter !== -1) {
+      window.clearTimeout(this.showTimeouter)
     }
     this.isIconShow = false
     this.isShow = false

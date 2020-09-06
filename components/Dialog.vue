@@ -89,10 +89,9 @@ export default class Dialog extends Vue {
 
     & > .body {
       padding: 0 10vw;
-      display: flex;
-      height: 100%;
-      align-items: center;
-      justify-content: center;
+      @include mq(mobile, tablet) {
+        padding: 0 2vw;
+      }
     }
   }
 

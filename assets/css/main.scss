@@ -1,5 +1,6 @@
 :root {
-  --mainColor: #32c787;
+  --mainColor: #03A9F4;
+  --accentColor: #03A9F4;
 }
 
 html, body {
@@ -238,7 +239,7 @@ a {
       }
 
       &:hover, &.active {
-        color: var(--mainColor);
+        color: var(--accentColor);
       }
 
       & > i {
@@ -271,8 +272,8 @@ a {
   display: inline-block;
 
   @include mq(mobile, tablet) {
-    font-size: 13px;
     display: block;
+    margin-bottom: 8px;
   }
 }
 

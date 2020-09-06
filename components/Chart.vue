@@ -1,8 +1,5 @@
 <template>
-  <div class="chart-page card">
-    <LoadingLayer ref="loading" />
-    <div ref="chart" class="chart"></div>
-  </div>
+<div ref="chart" class="chart"></div>
 </template>
 
 <script lang="ts">
@@ -17,7 +14,7 @@ import * as ApiT from '../types/ApiTypes'
 @Component({
   components: { LoadingLayer }
 })
-export default class ChartPage extends Vue {
+export default class Chart extends Vue {
   data: ApiT.ChartData | null = null
   params: ApiT.ChartParams | null = null
   loading!: LoadingLayer
@@ -107,38 +104,7 @@ export default class ChartPage extends Vue {
 </script>
 
 <style scoped lang="scss">
-.chart-page {
-  position: relative;
-  width: 100%;
+.sidebar {
 
-  .chart-action {
-    display: block;
-    margin-bottom: 5px;
-    padding-top: 3px;
-
-    .action-item {
-      cursor: pointer;
-      display: inline-block;
-      padding: 2px 0;
-      transition: all 0.2s ease-in-out;
-
-      &:not(:last-child) {
-        margin-right: 10px;
-        padding-right: 10px;
-        border-right: 1px solid #F4F4F4;
-      }
-
-      & > i {
-        margin-left: 5px;
-        font-size: 13px;
-
-        &.zmdi-square-o {}
-
-        &.zmdi-check-square {
-          color: var(--accentColor);
-        }
-      }
-    }
-  }
 }
 </style>

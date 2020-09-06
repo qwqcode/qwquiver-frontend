@@ -54,6 +54,15 @@ export default class ExplorerDialog extends Vue {
   padding: 20px;
   border-radius: 4px;
   width: 400px;
+  margin: 0 auto;
+  margin-top: 15vh;
+  margin-bottom: 5vh;
+
+  @include mq(mobile, tablet) {
+    width: 100%;
+    margin-top: calc(1vh + 55px);
+    margin-bottom: 1vh;
+  }
 
   .dialog-title {
     border-bottom: 1px solid #f4f4f4;
@@ -70,7 +79,7 @@ export default class ExplorerDialog extends Vue {
     padding: 5px;
 
     &:hover {
-      color: var(--mainColor);
+      color: var(--accentColor);
     }
   }
 
@@ -86,7 +95,7 @@ export default class ExplorerDialog extends Vue {
     word-break: break-all;
     white-space: normal;
     text-align: left;
-    border-left: 1px solid var(--mainColor);
+    border-left: 1px solid var(--accentColor);
     padding-left: 15px;
     border-radius: 0;
     margin-top: 10px;
@@ -108,7 +117,7 @@ export default class ExplorerDialog extends Vue {
     margin-bottom: 15px;
 
     &:hover {
-      color: var(--mainColor);
+      color: var(--accentColor);
     }
   }
 
@@ -125,7 +134,7 @@ export default class ExplorerDialog extends Vue {
 
       &.active:after {
         content: '\f26b';
-        color: var(--mainColor);
+        color: var(--accentColor);
         position: absolute;
         font-family: 'Material-Design-Iconic-Font';
         right: 0px;
@@ -154,7 +163,7 @@ export default class ExplorerDialog extends Vue {
       transition: 0.3s all;
 
       &:focus {
-        border: 1px solid var(--mainColor);
+        border: 1px solid var(--accentColor);
       }
     }
 
@@ -197,6 +206,8 @@ export default class ExplorerDialog extends Vue {
   }
 
   .table-data-counter {
+    position: relative;
+
     .data-item {
       display: flex;
       padding: 10px 20px;
@@ -204,6 +215,10 @@ export default class ExplorerDialog extends Vue {
       &:not(:last-child) {
         border-bottom: 1px solid #f4f4f4;
       }
+    }
+
+    .avg-data {
+      position: relative;
     }
 
     .data-name {

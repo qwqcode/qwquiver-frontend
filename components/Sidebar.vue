@@ -4,17 +4,17 @@
       <h2 class="list-label">基本</h2>
       <ul>
         <li :class="{ active: $route.name === 'index' }">
-          <span @click="$router.replace('/').catch(err => {})">
+          <span @click="linkTo('/')">
             <i class="zmdi zmdi-view-carousel"></i> 总览
           </span>
         </li>
         <li :class="{ active: $route.name === 'chart' }">
-          <span @click="$router.replace('/chart').catch(err => {})">
+          <span @click="linkTo('chart')">
             <i class="zmdi zmdi-equalizer"></i> 趋势
           </span>
         </li>
         <li :class="{ active: $route.name === 'about' }">
-          <span @click="$router.replace('/about').catch(err => {})">
+          <span @click="linkTo('/about')">
             <i class="zmdi zmdi-info-outline"></i> 关于
           </span>
         </li>
@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'nuxt-property-decorator'
+import { Component, Vue, Watch } from 'nuxt-property-decorator'
 import _ from 'lodash'
 
 @Component({})
@@ -41,14 +41,19 @@ export default class Sidebar extends Vue {
 
   created () {
     Vue.prototype.$sidebar = this
+
+    // Small screen is hidden by default
+    if (this.isMobile) {
+      this.isShow = false
+      this.$app.setContFullScreen(true)
+    }
   }
 
   mounted () {
-
   }
 
-  switchExam (name: string) {
-    this.$explorer.switchExam(name, true)
+  get isMobile () {
+    return document.body.offsetWidth < 740
   }
 
   show () {
@@ -73,6 +78,16 @@ export default class Sidebar extends Vue {
     } else {
       this.show()
     }
+  }
+
+  switchExam (name: string) {
+    if (this.isMobile) this.hide()
+    this.$explorer.switchExam(name, true)
+  }
+
+  linkTo (location: string) {
+    if (this.isMobile) this.hide()
+    this.$router.replace(location).catch(() => {})
   }
 }
 </script>

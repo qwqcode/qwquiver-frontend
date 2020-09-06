@@ -9,6 +9,7 @@ import { Vue, Component } from 'nuxt-property-decorator'
 export default class NotifyLayer extends Vue {
   created () {
     Vue.prototype.$notify = this
+    window.notify = this.add
   }
 
   add (message: string, level?: string, timeout: number = 2000): void {

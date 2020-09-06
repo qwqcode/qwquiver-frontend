@@ -276,7 +276,7 @@ export default class SearchLayer extends Vue {
     &.active {
       z-index: 2;
       background: #fff;
-      color: var(--mainColor);
+      color: var(--accentColor);
     }
 
     &:hover {
@@ -393,11 +393,11 @@ export default class SearchLayer extends Vue {
             transition: background-color .2s,border .2s,box-shadow .2s;
 
             &.active {
-              color: var(--mainColor);
+              color: var(--accentColor);
             }
 
             &.active:before, &:hover:before {
-              background: var(--mainColor);
+              background: var(--accentColor);
               content: ' ';
               position: absolute;
               left: -2px;
@@ -405,7 +405,7 @@ export default class SearchLayer extends Vue {
               height: calc(100% - 20px);
               width: 3px;
               box-shadow: 0 2px 15px rgba(0, 131, 255, 0.22);
-              border-left: 1px solid var(--mainColor);
+              border-left: 1px solid var(--accentColor);
             }
           }
         }

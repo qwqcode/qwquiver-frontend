@@ -15,3 +15,10 @@ declare module 'vue/types/vue' {
     $explorer: Explorer
   }
 }
+
+declare global {
+  interface Window {
+    notify(message: string, level?: string, timeout?: number): void
+    test: any
+  }
+}

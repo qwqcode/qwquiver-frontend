@@ -58,11 +58,13 @@ export interface QueryData extends PaginatedData {
   examName: string
   dataDesc: string
   examConf: EXAM_CONF
-  fieldList: F[]
-  avgList: { [key in F]?: number }
+  subjectList: F[]
   condList: { [key in F]?: string|RegExp }
   sortList: { [key in F]?: 1|-1 }
   initConf?: ConfData
+}
+export interface QueryAvgData extends PaginatedData {
+  avgList: { [key in F]?: number }
 }
 
 export interface ChartParams {

@@ -27,7 +27,7 @@
           <i class="zmdi zmdi-print" />
           <span>打印</span>
         </span>
-        <span class="item" @click="$refs.tableDataCounterDialog.show()">
+        <span class="item" @click="openAvgDialog()">
           <i class="zmdi zmdi-flash" />
           <span>平均分</span>
         </span>
@@ -85,6 +85,8 @@
               <tr v-for="(item, i) in data.list" :key="i" class="table-item">
                 <th v-for="f in ViewFieldList" :key="f">
                   <span v-if="f === 'NAME'" class="clickable-text" @click="goChart(item)">{{ item[f] }}</span>
+                  <span v-else-if="f === 'SCHOOL'" class="clickable-text" @click="$searchLayer.scSubmit(item.SCHOOL)">{{ item[f] }}</span>
+                  <span v-else-if="f === 'CLASS'" class="clickable-text" @click="$searchLayer.scSubmit(item.SCHOOL, item.CLASS)">{{ item[f] }}</span>
                   <span v-else>{{ item[f] }}</span>
                   <span v-if="fieldRankOn && TargetRankField.includes(f)" class="field-rank-print print-only">[{{ getItemFieldRank(item, f) }}]</span>
                   <span
@@ -193,10 +195,15 @@
     <ExplorerDialog ref="tableDataCounterDialog" title="数据统计">
       <div v-if="data !== null" class="table-data-counter">
       <span class="dialog-label">数据 "{{ data.dataDesc }}" 平均值</span>
-      <span v-for="(avg, f) in data.avgList" :key="f" class="data-item">
-        <span class="data-name">{{ transField(f) }}</span>
-        <span class="data-value">{{ avg }}</span>
-      </span>
+      <div class="avg-data">
+        <LoadingLayer ref="avgLoading" :delay="0" />
+        <template v-if="!!avgData">
+        <span v-for="f in TargetRankField.filter((f) => !!avgData.avgList[f])" :key="f" class="data-item">
+          <span class="data-name">{{ transField(f) }}</span>
+          <span class="data-value">{{ avgData.avgList[f] }}</span>
+        </span>
+        </template>
+      </div>
       </div>
     </ExplorerDialog>
   </div>
@@ -204,15 +211,16 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from 'nuxt-property-decorator'
-import { Persist } from 'vue-local-storage-decorator'
+import { Persist } from 'vue-persist-decorator'
 import $ from 'jquery'
-import _ from 'lodash'
+import _, { forEach } from 'lodash'
 import F, { ScoreData } from '../types/Field'
 import * as FG from '../types/Field/Grp'
 import * as ApiT from '../types/ApiTypes'
 import LoadingLayer from './LoadingLayer.vue'
 import SelectFloater from './SelectFloater.vue'
 import ExplorerDialog from './ExplorerDialog.vue'
+import Dialog from './Dialog.vue'
 
 type FIELD_RANK_TYPE = 'all'|'class'|'school'
 
@@ -256,7 +264,7 @@ export default class Explorer extends Vue {
   /** 全部字段 */
   get FieldList () {
     if (!this.data) return []
-    const rawFieldList = this.data.fieldList // 源字段
+    const rawFieldList = [...FG.F_MAIN, ...this.data.subjectList] // 源字段
 
     // 允许出现的字段
     const allowFields = [...FG.F_MAIN, ...FG.F_SUBJ, ...FG.F_EXT_SUM]
@@ -336,6 +344,7 @@ export default class Explorer extends Vue {
     await this.request(query)
   }
 
+  /** 数据请求 */
   public async request (params: object) {
     this.loading.show()
     this.params = params
@@ -352,13 +361,11 @@ export default class Explorer extends Vue {
       resp = await this.$axios.$get('./api/query', {
         params: this.params
       })
-    } catch (err) {
-      this.$notify.error(String(err))
     } finally {
       this.loading.hide()
     }
 
-    if (resp.success && !!resp.data) {
+    if (!!resp && resp.success && !!resp.data) {
       // 自动设置字段 显示/隐藏
       const whereObj = this.paramsWhereObj
       if (this.isClassSearchMode) {
@@ -390,13 +397,20 @@ export default class Explorer extends Vue {
         }
         this.$app.Conf = this.data.initConf
       }
+      // 自动隐藏值为空的字段
+      if (!!this.data && !!this.data.list[0]) { // 以第一行数据为样本
+        _.forEach(this.data.list[0], (val, f) => {
+          if (!FG.F_MAIN.includes(f as F)) return // 仅作用于 MAIN 字段
+          if (!val) {
+            this.setFieldView({ [f]: false })
+          }
+        })
+      }
 
       this.$nextTick(() => {
         this.adjustDisplay();
         (this.$refs.tBody as HTMLElement).scrollTo(0, 0)
       })
-    } else {
-      this.$notify.error(resp.msg)
     }
   }
 
@@ -502,7 +516,10 @@ export default class Explorer extends Vue {
   }
 
   adjustDisplay () {
-    console.log(+new Date())
+    if (this.$route.name !== 'index') {
+      return
+    }
+
     const wrapEl = $(this.$refs.tWrap)
     const containerEl = $(this.$refs.tContainer)
     const headerEl = $(this.$refs.tHeader)
@@ -656,6 +673,31 @@ export default class Explorer extends Vue {
   getItemFieldRankHoverTitle (item: ScoreData, f: F) {
     return `“${item.NAME}” 的 “${this.transField(f)}” 在 “${this.FieldRankTypeNameDict[this.fieldRankType]}成绩” 中排 ${this.getItemFieldRank(item, f)}名`
   }
+
+  avgData: ApiT.QueryAvgData | null = null
+
+  // 平均分查询
+  openAvgDialog() {
+    const dialog = this.$refs.tableDataCounterDialog as Dialog
+    dialog.show()
+    dialog.$nextTick(async () => {
+      const loading = this.$refs.avgLoading as LoadingLayer
+      loading.show()
+
+      let resp:any
+      try {
+        resp = await this.$axios.$get('./api/query/avg', {
+          params: this.params
+        })
+      } finally {
+        loading.hide()
+      }
+
+      if (!!resp && resp.success && !!resp.data) {
+        this.avgData = resp.data
+      }
+    })
+  }
 }
 </script>
 
@@ -675,6 +717,11 @@ export default class Explorer extends Vue {
   .score-table-wrap {
     height: calc(100vh - #{87px});
   }
+  @include mq(mobile, tablet) {
+    .score-table-wrap {
+      height: calc(100vh - #{75px});
+    }
+  }
 }
 
 /* table */
@@ -682,6 +729,9 @@ export default class Explorer extends Vue {
   height: calc(100vh - #{55px+87px+15px*2});
   display: flex;
   flex-direction: column;
+  @include mq(mobile, tablet) {
+    height: calc(100vh - #{130px});
+  }
 }
 
 .wly-table-container {
@@ -704,12 +754,12 @@ export default class Explorer extends Vue {
       cursor: pointer;
 
       &.select {
-        color: var(--mainColor);
+        color: var(--accentColor);
       }
 
       &.sort-desc,
       &.sort-asc {
-        color: var(--mainColor);
+        color: var(--accentColor);
 
         &:after {
           font-family: Material-Design-Iconic-Font;
@@ -728,7 +778,7 @@ export default class Explorer extends Vue {
   }
 }
 
-@media screen and (max-width: 559px) {
+@include mq(mobile, tablet) {
   .wly-table-header thead th span.select:after {
     position: initial;
   }
@@ -779,7 +829,7 @@ table {
     .clickable-text {
       cursor: pointer;
       &:hover {
-        color: var(--mainColor)
+        color: var(--accentColor)
       }
     }
 
@@ -819,7 +869,7 @@ table {
   text-align: center;
 }
 
-@media screen and (max-width: 559px) {
+@include mq(mobile, tablet) {
   .table > thead > tr > th,
   .table > tbody > tr > th,
   .table > tfoot > tr > th,
@@ -887,7 +937,7 @@ label {
       .ranking {
         font-size: 12px;
         vertical-align: text-top;
-        color: var(--mainColor);
+        color: var(--accentColor);
         position: absolute;
         margin-left: 3px;
       }
@@ -922,7 +972,7 @@ label {
 
   .paginate-button {
     &.current {
-      background-color: var(--mainColor);
+      background-color: var(--accentColor);
       color: #fff;
       cursor: default;
     }

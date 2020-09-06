@@ -51,7 +51,7 @@ const config: Configuration = {
    */
   plugins: [
     '@/plugins/jQuery.print.min.js',
-    '@/plugins/vue-local-storage-decorator.ts'
+    '@/plugins/axios.ts'
   ],
   /*
    ** Nuxt.js dev-modules
