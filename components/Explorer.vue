@@ -84,7 +84,7 @@
             <tbody>
               <tr v-for="(item, i) in data.list" :key="i" class="table-item">
                 <th v-for="f in ViewFieldList" :key="f">
-                  <span v-if="f === 'NAME'" class="clickable-text" @click="goChart(item)">{{ item[f] }}</span>
+                  <span v-if="f === 'NAME'" class="clickable-text" @click="goAnalyze(item)">{{ item[f] }}</span>
                   <span v-else-if="f === 'SCHOOL'" class="clickable-text" @click="$searchLayer.scSubmit(item.SCHOOL)">{{ item[f] }}</span>
                   <span v-else-if="f === 'CLASS'" class="clickable-text" @click="$searchLayer.scSubmit(item.SCHOOL, item.CLASS)">{{ item[f] }}</span>
                   <span v-else>{{ item[f] }}</span>
@@ -337,8 +337,11 @@ export default class Explorer extends Vue {
 
   @Watch('$route')
   public async onRouteQueryChanged () {
+    if (this.$route.name !== 'index') {
+      this.setFullScreen(false)
+      return
+    }
     const query = this.$route.query
-    if (this.$route.name !== 'index') return
     if (query === this.params) return
 
     await this.request(query)
@@ -584,10 +587,10 @@ export default class Explorer extends Vue {
     return title
   }
 
-  goChart (item: ScoreData) {
+  goAnalyze (item: ScoreData) {
     if (this.data === null) return
 
-    const query: ApiT.ChartParams = {
+    const query: ApiT.AnalyzeParams = {
       examGrp: this.data.examConf.Grp,
       where: JSON.stringify({
         NAME: item.NAME,
@@ -597,7 +600,7 @@ export default class Explorer extends Vue {
     }
 
     this.$router.push({
-      name: 'chart',
+      name: 'analyze',
       query: query as any
     })
   }
@@ -703,6 +706,8 @@ export default class Explorer extends Vue {
 
 <style scoped lang="scss">
 .explorer {
+  min-height: calc(100vh - 100px);
+  position: relative;
   .card-title {
     .exam-label {
       cursor: pointer;

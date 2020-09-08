@@ -8,11 +8,11 @@
             <i class="zmdi zmdi-view-carousel"></i> 总览
           </span>
         </li>
-        <li :class="{ active: $route.name === 'chart' }">
+        <!-- <li :class="{ active: $route.name === 'chart' }">
           <span @click="linkTo('chart')">
             <i class="zmdi zmdi-equalizer"></i> 趋势
           </span>
-        </li>
+        </li> -->
         <li :class="{ active: $route.name === 'about' }">
           <span @click="linkTo('/about')">
             <i class="zmdi zmdi-info-outline"></i> 关于

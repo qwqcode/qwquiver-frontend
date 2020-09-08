@@ -67,12 +67,17 @@ export interface QueryAvgData extends PaginatedData {
   avgList: { [key in F]?: number }
 }
 
-export interface ChartParams {
+export interface AnalyzeParams {
   examGrp?: string
   where?: string
 }
-export interface ChartData {
+export interface AnalyzeData {
+  examGrp: string
+  name: string
+  school: string
+  class: string
+  examCount: number
   uncertain: boolean
   fieldList: string[]
-  chartData: {[key in F|'exam']?: any}[]
+  exams: {[key in F|'exam'|'date']?: any}[]
 }
