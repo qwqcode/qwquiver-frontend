@@ -43,17 +43,13 @@ export default class Sidebar extends Vue {
     Vue.prototype.$sidebar = this
 
     // Small screen is hidden by default
-    if (this.isMobile) {
+    if (this.$app.isMobile) {
       this.isShow = false
       this.$app.setContFullScreen(true)
     }
   }
 
   mounted () {
-  }
-
-  get isMobile () {
-    return document.body.offsetWidth < 740
   }
 
   show () {
@@ -81,12 +77,12 @@ export default class Sidebar extends Vue {
   }
 
   switchExam (name: string) {
-    if (this.isMobile) this.hide()
+    if (this.$app.isMobile) this.hide()
     this.$explorer.switchExam(name, true)
   }
 
   linkTo (location: string) {
-    if (this.isMobile) this.hide()
+    if (this.$app.isMobile) this.hide()
     this.$router.replace(location).catch(() => {})
   }
 }

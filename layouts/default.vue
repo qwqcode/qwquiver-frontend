@@ -92,6 +92,10 @@ export default class Default extends Vue {
   setContFullScreen (val: boolean) {
     this.contFullScreen = val
   }
+
+  get isMobile () {
+    return document.body.offsetWidth < 740
+  }
 }
 </script>
 

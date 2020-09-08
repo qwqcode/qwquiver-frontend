@@ -361,7 +361,7 @@ export default class Explorer extends Vue {
 
     let resp:any
     try {
-      resp = await this.$axios.$get('./api/query', {
+      resp = await this.$axios.$get('/api/query', {
         params: this.params
       })
     } finally {
@@ -595,7 +595,7 @@ export default class Explorer extends Vue {
       where: JSON.stringify({
         NAME: item.NAME,
         SCHOOL: item.SCHOOL,
-        CLASS: item.CLASS
+        // CLASS: item.CLASS
       } as {[k in F]?: string})
     }
 
@@ -689,7 +689,7 @@ export default class Explorer extends Vue {
 
       let resp:any
       try {
-        resp = await this.$axios.$get('./api/query/avg', {
+        resp = await this.$axios.$get('/api/query/avg', {
           params: this.params
         })
       } finally {
@@ -829,13 +829,6 @@ table {
     position: relative;
     th {
       position: relative;
-    }
-
-    .clickable-text {
-      cursor: pointer;
-      &:hover {
-        color: var(--accentColor)
-      }
     }
 
     .field-rank {

@@ -359,3 +359,10 @@ a {
 .card-footer,.card-header+.card-block {
   padding-top: 0
 }
+
+.clickable-text {
+  cursor: pointer;
+  &:hover {
+    color: var(--accentColor)
+  }
+}

@@ -74,7 +74,7 @@ const config: Configuration = {
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
-    baseURL: IsDEV ? 'http://localhost:8087/' : './'
+    baseURL: IsDEV ? 'http://localhost:8087/' : '/'
   },
   /*
    ** Build configuration

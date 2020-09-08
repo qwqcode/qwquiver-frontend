@@ -98,5 +98,12 @@ export default class Chart extends Vue {
   overflow: hidden;
   height: 100%;
   width: 100%;
+
+  @include mq(mobile, tablet) {
+    overflow-x: scroll;
+    .chart {
+      width: 1400px;
+    }
+  }
 }
 </style>

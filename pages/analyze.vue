@@ -8,15 +8,43 @@
         </div>
         <div class="meta">
           <h2 class="name">{{ data.name }}</h2>
-          <p class="school-class">{{ data.school }} · {{ data.class }}</p>
+          <p class="school-class">
+            <span class="school">{{ data.school }}</span> ·
+            <span v-for="v in data.classList" :key="v" class="class">{{ v }}</span>
+          </p>
           <p>共参加 {{ data.examCount }} 次 {{ data.examGrp }} 考试</p>
+        </div>
+        <div class="actions">
+          <span @click="() => { viewMode = viewMode == 'chart' ? 'text' : 'chart'}"><template v-if="viewMode == 'chart'">文字</template><template v-if="viewMode == 'text'">图表</template>模式</span>
         </div>
       </div>
     </div>
 
     <div class="card">
-      <div class="exam-chart">
+      <div v-if="viewMode == 'chart'" class="exam-chart">
         <Chart ref="chart" />
+      </div>
+      <div v-else-if="viewMode == 'text'" class="exams-text">
+        <table>
+          <tr>
+            <th>名称</th>
+            <th v-for="f in data.fieldList" :key="f">{{ f }}</th>
+            <th>时间</th>
+          </tr>
+          <tr v-for="exam in data.exams" :key="exam.exam">
+            <td><strong>{{ exam.exam }}</strong></td>
+            <td v-for="f in data.fieldList" :key="f">{{ exam[f] || '' }}</td>
+            <td>{{ exam.date }}</td>
+          </tr>
+        </table>
+        <div class="pure-text">
+          <ul v-for="exam in data.exams" :key="exam.exam">
+            <h4>{{ exam.exam }}</h4>
+            <span v-for="f in data.fieldList" :key="f"><li v-if="!!exam[f]"><strong>{{f}}</strong>：{{ exam[f] || '' }}</li></span>
+            <p><sub>(时间：{{ exam.date }})</sub></p>
+            <hr/>
+          </ul>
+        </div>
       </div>
     </div>
     </template>
@@ -38,6 +66,7 @@ export default class AnalyzePage extends Vue {
   data: ApiT.AnalyzeData | null = null
 
   loading!: LoadingLayer
+  viewMode: 'text'|'chart' = !this.$app.isMobile ? 'chart' : 'text'
 
   mounted () {
     this.loading = this.$refs.loading as LoadingLayer
@@ -49,7 +78,7 @@ export default class AnalyzePage extends Vue {
     this.params = params
 
     this.loading.show()
-    const respData = await this.$axios.$get('./api/analyze', {
+    const respData = await this.$axios.$get('/api/analyze', {
       params: this.params
     })
     this.loading.hide()
@@ -57,9 +86,8 @@ export default class AnalyzePage extends Vue {
       this.data = respData.data
       this.$nextTick(() => {
         if (this.data == null) return
-        const chart = this.$refs.chart as Chart
-        this.data.exams = _.sortBy(this.data.exams, (o) => o.date ? +(new Date(o.date).getTime()) : -1)
-        chart.drawChart(this.data)
+        this.data.exams = _.sortBy(this.data.exams, (o) => o.date ? +(new Date(o.date).getTime()) : -1) // 时间排序
+        this.drawChartByData()
       })
     }
   }
@@ -69,6 +97,23 @@ export default class AnalyzePage extends Vue {
     if (query === this.params) return
 
     this.request(query)
+  }
+
+  @Watch('viewMode')
+  onViewModeChanged () {
+    if (this.viewMode === 'chart' && this.data != null) {
+      this.drawChartByData()
+    }
+  }
+
+  drawChartByData () {
+    if (this.viewMode !== 'chart' || this.data == null) return
+
+    this.$nextTick(() => {
+      if (this.data == null) return
+      const chart = this.$refs.chart as Chart
+      chart.drawChart(this.data)
+    })
   }
 }
 </script>
@@ -112,13 +157,92 @@ export default class AnalyzePage extends Vue {
       }
 
       .school-class {
+        .school {
 
+        }
+
+        .class {
+          &:not(:last-child) {
+            margin-right: 8px;
+          }
+        }
+      }
+    }
+
+    .actions {
+      display: flex;
+      place-content: center;
+      justify-content: center;
+      align-items: center;
+      padding-right: 30px;
+
+      span {
+        cursor: pointer;
+        user-select: none;
+        font-size: 14px;
+        color: var(--mainColor);
+        border: 2px solid var(--mainColor);
+        padding: 4px 14px;
+        border-radius: 3px;
       }
     }
   }
 }
 
 .exam-chart {
-  height: 550px;
+  height: calc(100vh - 210px);
+}
+
+.exams-text {
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    border: 1px solid #f4f4f4;
+  }
+
+  table th {
+    font-weight: bold;
+    border: 1px solid #dfe2e5;
+    padding: 6px 13px;
+  }
+
+  table td {
+    padding: 6px 13px;
+    border: 1px solid #dfe2e5;
+  }
+
+  table tr {
+    background-color: #fff;
+    border-top: 1px solid #c6cbd1;
+  }
+
+  table tr:nth-child(2n) {
+    background-color: #f6f8fa;
+  }
+}
+
+.pure-text {
+  display: none;
+}
+
+@include mq(mobile, tablet) {
+  .exams-text table {
+    display: none;
+  }
+
+  .pure-text {
+    display: block;
+    padding: 30px 0;
+
+    h4 {
+      color: var(--mainColor)
+    }
+
+
+    hr {
+      border: 1px dashed #828282;
+    }
+  }
 }
 </style>

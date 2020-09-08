@@ -75,7 +75,7 @@ export interface AnalyzeData {
   examGrp: string
   name: string
   school: string
-  class: string
+  classList: string[]
   examCount: number
   uncertain: boolean
   fieldList: string[]

@@ -180,7 +180,7 @@ export default class SearchLayer extends Vue {
     this.scLoading.show()
     let respData
     try {
-      respData = await this.$axios.$get('./api/school/all', {
+      respData = await this.$axios.$get('/api/school/all', {
         params: { exam: this.searchExamName }
       })
     } catch (err) {
