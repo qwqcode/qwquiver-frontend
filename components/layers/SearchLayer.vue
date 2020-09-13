@@ -183,13 +183,10 @@ export default class SearchLayer extends Vue {
       respData = await this.$axios.$get('/api/school/all', {
         params: { exam: this.searchExamName }
       })
-    } catch (err) {
-      this.$notify.error(String(err))
     } finally {
       this.scLoading.hide()
     }
-    if (!respData.success) {
-      this.$notify.error(respData.msg)
+    if (!respData || !respData.success || !respData.data) {
       return
     }
     const data = (respData.data || null) as ApiT.AllSchoolData

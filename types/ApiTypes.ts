@@ -81,3 +81,13 @@ export interface AnalyzeData {
   fieldList: string[]
   exams: {[key in F|'exam'|'date']?: any}[]
 }
+
+export interface RelationParams {
+  use: 'middle'|'between'
+  a: string
+  b: string
+  passwd: string
+}
+export interface RelationData {
+  text: string
+}

@@ -47,8 +47,10 @@ export default class LoadingLayer extends Vue {
 
 <style scoped lang="scss">
 .loading-layer {
+  z-index: 5;
   display: flex;
   position: absolute;
+  left: 0;
   top: 0;
   width: 100%;
   height: 100%;

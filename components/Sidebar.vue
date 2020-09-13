@@ -13,6 +13,11 @@
             <i class="zmdi zmdi-equalizer"></i> 趋势
           </span>
         </li> -->
+        <li :class="{ active: $route.name === 'relation' }">
+          <span @click="linkTo('/relation')">
+            <i class="zmdi zmdi-link"></i> RELA
+          </span>
+        </li>
         <li :class="{ active: $route.name === 'about' }">
           <span @click="linkTo('/about')">
             <i class="zmdi zmdi-info-outline"></i> 关于
