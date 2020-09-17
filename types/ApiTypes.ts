@@ -83,7 +83,7 @@ export interface AnalyzeData {
 }
 
 export interface RelationParams {
-  use: 'middle'|'between'
+  use: 'middle'|'between'|'nabbr'|'varatar'|'ndetail'
   a: string
   b: string
   passwd: string

@@ -15,7 +15,8 @@
           <p>共参加 {{ data.examCount }} 次 {{ data.examGrp }} 考试</p>
         </div>
         <div class="actions">
-          <span @click="() => { viewMode = viewMode == 'chart' ? 'text' : 'chart'}"><template v-if="viewMode == 'chart'">文字</template><template v-if="viewMode == 'text'">图表</template>模式</span>
+          <span @click="() => { viewMode = viewMode == 'chart' ? 'text' : 'chart'}"><template v-if="viewMode == 'chart'">文字</template><template v-if="viewMode == 'text'">图形</template></span>
+          <span @click="() => { this.$router.push({ name: 'relation', query: {'name': data ? data.name : ''} }) }">Rela</span>
         </div>
       </div>
     </div>
@@ -184,6 +185,10 @@ export default class AnalyzePage extends Vue {
         border: 2px solid var(--mainColor);
         padding: 4px 14px;
         border-radius: 3px;
+
+        &:not(:last-child) {
+          margin-right: 5px;
+        }
       }
     }
   }

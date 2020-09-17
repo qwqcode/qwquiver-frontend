@@ -23,7 +23,12 @@ const config: Configuration = {
         content: process.env.npm_package_description || ''
       }
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
+    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+    script: [
+      {
+        src: '/sigma.min.js'
+      }
+    ]
   },
   /*
    ** Customize the progress-bar color
@@ -51,6 +56,7 @@ const config: Configuration = {
    */
   plugins: [
     '@/plugins/jQuery.print.min.js',
+    '@/plugins/jquery.autocomplete.min.js',
     '@/plugins/axios.ts'
   ],
   /*
