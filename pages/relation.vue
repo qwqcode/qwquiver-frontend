@@ -46,6 +46,11 @@
 
         <LoadingLayer ref="loading" :delay="0" />
 
+        <div
+          v-show="showNetwork"
+          ref="networkGraph"
+          class="network-graph"
+        ></div>
         <article class="markdown-body" v-html="ResultText" />
       </div>
     </div>
@@ -101,22 +106,35 @@ export default class RelationPage extends Vue {
   signalNameUse = ['varatar', 'nabbr', 'ndetail', 'nclass']
   noNeedPasswdUse = ['nabbr', 'nclass']
 
+  showNetwork = false
+
+  head() {
+    return {
+      title: 'Relations',
+      script: [
+        {
+          src: '/lib/vis-network.min.js',
+        },
+      ],
+    }
+  }
+
   mounted() {
     this.loading = this.$refs.loading as LoadingLayer
 
-const acConf: any = {
-  noCache: true,
-  serviceUrl: this.$axios.defaults.baseURL + 'api/relation/autocomplete',
-  // deferRequestBy: 100,
-    transformResult: (response) => {
-      const data = JSON.parse(response)
+    const acConf: any = {
+      noCache: true,
+      serviceUrl: this.$axios.defaults.baseURL + 'api/relation/autocomplete',
+      // deferRequestBy: 100,
+      transformResult: (response) => {
+        const data = JSON.parse(response)
         return {
-            suggestions: $.map(data.data.names, (name) => {
-                return { value: name, data: name };
-            })
-        };
+          suggestions: $.map(data.data.names, (name) => {
+            return { value: name, data: name }
+          }),
+        }
+      },
     }
-}
 
     ;($(this.$refs.inputA) as any).autocomplete(acConf)
     ;($(this.$refs.inputB) as any).autocomplete(acConf)
@@ -155,11 +173,74 @@ const acConf: any = {
       return
     }
     this.data = respData.data as ApiT.RelationData
+    if ((this.data as any).graph) {
+      this.drawNetworkGraph((this.data as any).graph)
+      console.log((this.data as any).graph)
+    }
   }
 
   get ResultText() {
     if (!this.data || !this.data.text) return ''
     return marked(this.data.text)
+  }
+
+  drawNetworkGraph(data: any) {
+    const vis = (window as any).vis
+    // const nodes = new vis.DataSet([
+    //   { id: 1, label: "Node 1" },
+    //   { id: 2, label: "Node 2" },
+    //   { id: 3, label: "Node 3" },
+    //   { id: 4, label: "Node 4" },
+    //   { id: 5, label: "Node 5" },
+    // ]);
+
+    // // create an array with edges
+    // const edges = new vis.DataSet([
+    //   { from: 1, to: 3 },
+    //   { from: 1, to: 2 },
+    //   { from: 2, to: 4 },
+    //   { from: 2, to: 5 },
+    //   { from: 3, to: 3 },
+    // ]);
+
+    // // create a network
+    // const data = {
+    //   nodes,
+    //   edges,
+    // };
+    const options = {
+      nodes: {
+        shape: 'dot',
+        scaling: {
+          min: 10,
+          max: 30,
+        },
+        font: {
+          size: 12,
+          face: 'Tahoma',
+        },
+      },
+      edges: {
+        color: { inherit: true },
+        width: 0.15,
+        smooth: {
+          type: 'continuous',
+        },
+      },
+      interaction: {
+        hideEdgesOnDrag: true,
+        tooltipDelay: 200,
+      },
+      configure: {
+        // filter: (option, path) => {
+        //   return false
+        // },
+        showButton: false,
+      },
+      physics: false,
+    }
+    const network = new vis.Network(this.$refs.networkGraph, data, options)
+    this.showNetwork = true
   }
 }
 </script>
@@ -184,9 +265,9 @@ input[type='text'] {
   max-height: calc(100vh - 300px);
 }
 
-.network {
-  width: 600px;
-  height: 400px;
+.network-graph {
+  width: 100%;
+  height: 1000px;
   border: 1px solid lightgray;
 }
 </style>

@@ -31,7 +31,13 @@
 import { Component, Vue } from 'nuxt-property-decorator'
 
 @Component({})
-export default class AboutPage extends Vue {}
+export default class AboutPage extends Vue {
+  head() {
+      return {
+        title: "关于",
+      }
+  }
+}
 </script>
 
 <style scoped lang="scss">
